@@ -9,6 +9,7 @@
 class UCameraComponent;
 class UStaticMeshComponent;
 class UBoxComponent;
+class UCableComponent;
 
 UCLASS()
 class LASTONELEFT_API ALOL_Character : public ACharacter
@@ -27,6 +28,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collider")
 	UBoxComponent* BoxComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Cable")
+	UCableComponent* CableComp;
 
 protected:
 	void MoveRight(float v);

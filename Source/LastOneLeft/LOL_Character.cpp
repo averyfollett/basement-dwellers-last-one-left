@@ -21,6 +21,10 @@ ALOL_Character::ALOL_Character()
 
 	BoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp"));
 	BoxComp->SetupAttachment(RootComponent);
+
+	CableComp = CreateDefaultSubobject<UCableComponent>(TEXT("CableComp"));
+	CableComp->SetupAttachment(MeshComp);
+	CableComp->SetVisibility(false, true);
 }
 
 void ALOL_Character::MoveRight(float v)
@@ -61,10 +65,6 @@ void ALOL_Character::Grapple()
 		if (traceHitResult.Component->ComponentHasTag(FName("Platform")))
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("actor has tag"));
-
-
-
-			GetWorld()->SpawnActor<ACableActor>(ACableActor::StaticClass(), playerLoc);
 
 		}
 

@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class UStaticMeshComponent;
+class UBoxComponent;
 
 UCLASS()
 class LASTONELEFT_API ALOL_Character : public ACharacter
@@ -24,8 +25,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player")
 	UStaticMeshComponent* MeshComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collider")
+	UBoxComponent* BoxComp;
+
 protected:
 	void MoveRight(float v);
+	void Grapple();
 
 public:	
 	// Called to bind functionality to input

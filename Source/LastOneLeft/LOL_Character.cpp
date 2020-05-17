@@ -39,6 +39,13 @@ void ALOL_Character::StopGrapple()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("released mouse button"));
 	grappleStop = true;
+	if (shouldGrapple)
+	{
+		float intensity = 400.0f;
+		float dist = (grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()).Size();
+
+		LaunchCharacter(FVector(0, 0, intensity), false, false);
+	}
 }
 
 void ALOL_Character::Grapple()
@@ -49,17 +56,18 @@ void ALOL_Character::Grapple()
 
 	//find where the player clicks
 	FHitResult underCursorHitResult;
-	playerController->GetHitResultUnderCursor(ECC_Visibility, true, underCursorHitResult);
+	playerController->GetHitResultUnderCursor(ECC_GameTraceChannel1, true, underCursorHitResult);
 
 	//rotate our temp object toward clicked location
 	MeshComp->SetRelativeRotation(UKismetMathLibrary::FindLookAtRotation(playerLoc, underCursorHitResult.Location));
 
 	//calculate the end location of the line trace based on a set length
-	FVector endLoc = (MeshComp->GetForwardVector() * 500) + playerLoc;	
+	FVector endLoc = (MeshComp->GetForwardVector() * 500) + playerLoc;
 
 	//do the line trace for anything blocking visibility
 	FHitResult traceHitResult;
 	GetWorld()->LineTraceSingleByChannel(traceHitResult, playerLoc, endLoc, ECC_Visibility);
+	//DrawDebugLine(GetWorld(), playerLoc, underCursorHitResult.Location, FColor::Green, true);
 
 	//if we hit an actor
 	if (traceHitResult.GetActor() != nullptr)

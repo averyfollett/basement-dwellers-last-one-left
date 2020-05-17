@@ -38,6 +38,7 @@ protected:
 	void GrappleMovement();
 
 	FVector grappleToLoc;
+	bool shouldGrapple = false;
 
 public:	
 	// Called to bind functionality to input

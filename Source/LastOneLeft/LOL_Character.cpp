@@ -11,7 +11,7 @@
 // Sets default values
 ALOL_Character::ALOL_Character()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(RootComponent);
@@ -71,8 +71,13 @@ void ALOL_Character::Grapple()
 			CableComp->EndLocation.X = traceHitResult.GetComponent()->GetComponentLocation().X;
 
 			//set grapple location (for GrappleMovement function to handle)
-			grappleToLoc = traceHitResult.Location;
+			grappleToLoc = traceHitResult.Actor->GetActorLocation();
 			
+			shouldGrapple = true;
+		}
+		else
+		{
+			shouldGrapple = false;
 		}
 
 	}
@@ -81,7 +86,17 @@ void ALOL_Character::Grapple()
 
 void ALOL_Character::GrappleMovement()
 {
-
+	if ((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - grappleToLoc).Size() > 100)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("grappling to point"));
+		AddMovementInput(grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation(), 1000.0f);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleToLoc.ToString());
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("DONE grapple"));
+		shouldGrapple = false;
+	}
 }
 
 void ALOL_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -98,7 +113,11 @@ void ALOL_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ALOL_Character::Tick(float DeltaTime)
 {
-	//if ((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - grappleToLoc).Size() > 100)
-	//	GrappleMovement();
+	if (shouldGrapple)
+	{
+		
+		GrappleMovement();
+	}
+	
 }
 

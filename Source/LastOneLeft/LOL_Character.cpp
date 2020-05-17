@@ -34,6 +34,22 @@ void ALOL_Character::MoveRight(float v)
 		AddMovementInput(GetActorRightVector(), v);
 	}
 }
+void ALOL_Character::Blast()
+{
+
+}
+
+FVector ALOL_Character::GetPlayerLoc(APlayerController* playerController)
+{
+	return playerController->GetPawn()->GetActorLocation();
+}
+
+FVector ALOL_Character::GetMouseLoc(APlayerController* playerController)
+{
+	FHitResult underCursorHitResult;
+	playerController->GetHitResultUnderCursor(ECC_GameTraceChannel1, true, underCursorHitResult);
+	return underCursorHitResult.Location;
+}
 
 void ALOL_Character::StopGrapple()
 {
@@ -52,14 +68,15 @@ void ALOL_Character::Grapple()
 {
 	grappleStop = false;
 	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
-	FVector playerLoc = playerController->GetPawn()->GetActorLocation();
+	//FVector playerLoc = playerController->GetPawn()->GetActorLocation();
+	FVector playerLoc = GetPlayerLoc(playerController);
 
 	//find where the player clicks
-	FHitResult underCursorHitResult;
-	playerController->GetHitResultUnderCursor(ECC_GameTraceChannel1, true, underCursorHitResult);
+	FVector mouseLoc = GetMouseLoc(playerController);
+	
 
 	//rotate our temp object toward clicked location
-	MeshComp->SetRelativeRotation(UKismetMathLibrary::FindLookAtRotation(playerLoc, underCursorHitResult.Location));
+	MeshComp->SetRelativeRotation(UKismetMathLibrary::FindLookAtRotation(playerLoc, mouseLoc));
 
 	//calculate the end location of the line trace based on a set length
 	FVector endLoc = (MeshComp->GetForwardVector() * 500) + playerLoc;
@@ -67,7 +84,7 @@ void ALOL_Character::Grapple()
 	//do the line trace for anything blocking visibility
 	FHitResult traceHitResult;
 	GetWorld()->LineTraceSingleByChannel(traceHitResult, playerLoc, endLoc, ECC_Visibility);
-	//DrawDebugLine(GetWorld(), playerLoc, underCursorHitResult.Location, FColor::Green, true);
+	//DrawDebugLine(GetWorld(), playerLoc, mouseLoc, FColor::Green, true);
 
 	//if we hit an actor
 	if (traceHitResult.GetActor() != nullptr)
@@ -125,6 +142,7 @@ void ALOL_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Grapple", IE_Pressed, this, &ALOL_Character::Grapple);
 	PlayerInputComponent->BindAction("Grapple", IE_Released, this, &ALOL_Character::StopGrapple);
+	PlayerInputComponent->BindAction("Blast", IE_Pressed, this, &ALOL_Character::Blast);
 	
 
 	PlayerInputComponent->BindAxis("MoveRight", this, &ALOL_Character::MoveRight);

@@ -37,6 +37,9 @@ protected:
 	void Grapple();
 	void GrappleMovement();
 	void StopGrapple();
+	void Blast();
+	FVector GetPlayerLoc(APlayerController* playerController);
+	FVector GetMouseLoc(APlayerController* playerController);
 
 	FVector grappleToLoc;
 	bool shouldGrapple = false;

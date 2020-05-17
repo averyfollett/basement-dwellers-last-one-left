@@ -67,6 +67,8 @@ void ALOL_Character::Grapple()
 			//attach cable to hit result location
 			CableComp->SetVisibility(true, true);
 			CableComp->SetAttachEndToComponent(traceHitResult.GetComponent());
+			CableComp->EndLocation = traceHitResult.Location - traceHitResult.GetComponent()->GetComponentLocation();
+			CableComp->EndLocation.X = traceHitResult.GetComponent()->GetComponentLocation().X;
 
 			//set grapple location (for GrappleMovement function to handle)
 			grappleToLoc = traceHitResult.Location;

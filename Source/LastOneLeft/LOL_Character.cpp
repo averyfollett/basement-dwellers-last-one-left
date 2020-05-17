@@ -35,8 +35,15 @@ void ALOL_Character::MoveRight(float v)
 	}
 }
 
+void ALOL_Character::StopGrapple()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("released mouse button"));
+	grappleStop = true;
+}
+
 void ALOL_Character::Grapple()
 {
+	grappleStop = false;
 	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 	FVector playerLoc = playerController->GetPawn()->GetActorLocation();
 
@@ -62,7 +69,7 @@ void ALOL_Character::Grapple()
 		{
 			//debug grapple location
 			DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Actor->GetActorLocation(), FColor::Green, true);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("actor is platform"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("actor is platform"));
 			
 			//attach cable to hit result location
 			CableComp->SetVisibility(true, true);
@@ -86,18 +93,19 @@ void ALOL_Character::Grapple()
 
 void ALOL_Character::GrappleMovement()
 {
-	if ((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - grappleToLoc).Size() > 180)
+	//if ((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - grappleToLoc).Size() > 180 && grappleStop == false)
+	if (grappleStop == false)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("grappling to point"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("grappling to point"));
 		LaunchCharacter((grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.1, false, false);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleToLoc.ToString());
-		
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleToLoc.ToString());
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("DONE grapple"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("DONE grapple"));
 		shouldGrapple = false;
 		CableComp->SetVisibility(false, true);
+		grappleStop = false;
 	}
 }
 
@@ -108,6 +116,7 @@ void ALOL_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Grapple", IE_Pressed, this, &ALOL_Character::Grapple);
+	PlayerInputComponent->BindAction("Grapple", IE_Released, this, &ALOL_Character::StopGrapple);
 	
 
 	PlayerInputComponent->BindAxis("MoveRight", this, &ALOL_Character::MoveRight);
@@ -115,9 +124,9 @@ void ALOL_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ALOL_Character::Tick(float DeltaTime)
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString(grappleStop ? TEXT("true") : TEXT("false")));
 	if (shouldGrapple)
 	{
-		
 		GrappleMovement();
 	}
 	

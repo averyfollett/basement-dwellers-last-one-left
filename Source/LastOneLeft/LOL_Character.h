@@ -36,9 +36,11 @@ protected:
 	void MoveRight(float v);
 	void Grapple();
 	void GrappleMovement();
+	void StopGrapple();
 
 	FVector grappleToLoc;
 	bool shouldGrapple = false;
+	bool grappleStop = false;
 
 public:	
 	// Called to bind functionality to input

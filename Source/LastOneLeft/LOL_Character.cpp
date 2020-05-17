@@ -86,16 +86,18 @@ void ALOL_Character::Grapple()
 
 void ALOL_Character::GrappleMovement()
 {
-	if ((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - grappleToLoc).Size() > 100)
+	if ((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - grappleToLoc).Size() > 200)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("grappling to point"));
-		AddMovementInput(grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation(), 1000.0f);
+		LaunchCharacter((grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.1, false, false);
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleToLoc.ToString());
+		
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("DONE grapple"));
 		shouldGrapple = false;
+		CableComp->SetVisibility(false, true);
 	}
 }
 

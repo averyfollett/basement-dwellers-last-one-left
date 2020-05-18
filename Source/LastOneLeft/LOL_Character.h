@@ -44,6 +44,7 @@ protected:
 	FVector grappleToLoc;
 	bool shouldGrapple = false;
 	bool grappleStop = false;
+	FVector grappleEndLoc;
 	
 
 public:	

@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -33,6 +31,7 @@ public:
 	UCableComponent* CableComp;
 
 protected:
+	// Functions:
 	void MoveRight(float v);
 	void Grapple();
 	void GrappleMovement();
@@ -41,17 +40,21 @@ protected:
 	FVector GetPlayerLoc(APlayerController* playerController);
 	FVector GetMouseLoc(APlayerController* playerController);
 
-	FVector grappleToLoc;
-	bool shouldGrapple = false;
-	bool grappleStop = false;
-	FVector grappleEndLoc;
-	
+	// Variables:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
+		FVector grappleToLoc;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
+		FVector grappleEndLoc;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
+		bool shouldGrapple = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
+		bool grappleStop = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blast")
+		bool canBlast = true;
 
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blast")
-	bool canBlast = true;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

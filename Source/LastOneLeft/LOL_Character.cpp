@@ -44,7 +44,7 @@ void ALOL_Character::Blast()
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("blasting"));
 		mouseLoc.X = 0;
 
-		LaunchCharacter((mouseLoc - playerLoc) * 5, false, false);
+		LaunchCharacter((mouseLoc - playerLoc) * 4, false, false);
 		canBlast = false;
 	}
 }
@@ -89,12 +89,12 @@ void ALOL_Character::Grapple()
 	MeshComp->SetRelativeRotation(UKismetMathLibrary::FindLookAtRotation(playerLoc, mouseLoc));
 
 	//calculate the end location of the line trace based on a set length
-	FVector endLoc = (MeshComp->GetForwardVector() * 500) + playerLoc;
+	FVector endLoc = (MeshComp->GetForwardVector() * 1000) + playerLoc;
 
 	//do the line trace for anything blocking visibility
 	FHitResult traceHitResult;
 	GetWorld()->LineTraceSingleByChannel(traceHitResult, playerLoc, endLoc, ECC_Visibility);
-	//DrawDebugLine(GetWorld(), playerLoc, mouseLoc, FColor::Green, true);
+	//DrawDebugLine(GetWorld(), playerLoc, endLoc, FColor::Green, true);
 
 	//if we hit an actor
 	if (traceHitResult.GetActor() != nullptr)
@@ -103,7 +103,7 @@ void ALOL_Character::Grapple()
 		if (traceHitResult.Component->ComponentHasTag(FName("Platform")))
 		{
 			//debug grapple location
-			DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Actor->GetActorLocation(), FColor::Green, true);
+			//DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Actor->GetActorLocation(), FColor::Green, true);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("actor is platform"));
 			
 			//attach cable to hit result location

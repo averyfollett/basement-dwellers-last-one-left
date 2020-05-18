@@ -36,6 +36,7 @@ void ALOL_Character::MoveRight(float v)
 }
 void ALOL_Character::Blast()
 {
+
 	if (canBlast)
 	{
 		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
@@ -64,6 +65,7 @@ FVector ALOL_Character::GetMouseLoc(APlayerController* playerController)
 
 void ALOL_Character::StopGrapple()
 {
+	
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("released mouse button"));
 	grappleStop = true;
 	if (shouldGrapple)
@@ -73,6 +75,7 @@ void ALOL_Character::StopGrapple()
 
 		LaunchCharacter(FVector(0, 0, intensity), false, false);
 	}
+	
 }
 
 void ALOL_Character::Grapple()
@@ -110,10 +113,18 @@ void ALOL_Character::Grapple()
 			
 			//attach cable to hit result location
 			CableComp->SetVisibility(true, true);
+			/*
 			CableComp->SetAttachEndToComponent(traceHitResult.GetComponent());
 			CableComp->EndLocation = traceHitResult.Location - traceHitResult.GetComponent()->GetComponentLocation();
 			CableComp->EndLocation.X = traceHitResult.GetComponent()->GetComponentLocation().X;
-			//DrawDebugLine(GetWorld(), playerLoc, CableComp->GetAttachedComponent()->GetComponentLocation() - CableComp->EndLocation, FColor::Green, true);
+			*/
+			grappleEndLoc = traceHitResult.Location;
+			CableComp->EndLocation = grappleEndLoc - playerLoc;
+
+			//DrawDebugLine(GetWorld(), playerLoc, CableComp->EndLocation - CableComp->GetAttachedComponent()->GetComponentLocation(), FColor::Green, true);
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, traceHitResult.Location.ToString());
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, CableComp->GetAttachedComponent()->GetComponentLocation().ToString());
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, CableComp->EndLocation.ToString());
 
 			//set grapple location (for GrappleMovement function to handle)
 			grappleToLoc = traceHitResult.Location;
@@ -134,6 +145,9 @@ void ALOL_Character::GrappleMovement()
 	//if ((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - grappleToLoc).Size() > 180 && grappleStop == false)
 	if (grappleStop == false)
 	{
+		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+		FVector playerLoc = GetPlayerLoc(playerController);
+		CableComp->EndLocation = grappleEndLoc - playerLoc;;
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("grappling to point"));
 		LaunchCharacter((grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.05, false, false);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleToLoc.ToString());

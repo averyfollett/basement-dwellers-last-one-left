@@ -103,17 +103,19 @@ void ALOL_Character::Grapple()
 		if (traceHitResult.Component->ComponentHasTag(FName("Platform")))
 		{
 			//debug grapple location
-			//DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Actor->GetActorLocation(), FColor::Green, true);
+			DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Actor->GetActorLocation(), FColor::Red, true);
+			//DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Location, FColor::Green, true);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("actor is platform"));
 			
 			//attach cable to hit result location
 			CableComp->SetVisibility(true, true);
 			CableComp->SetAttachEndToComponent(traceHitResult.GetComponent());
-			CableComp->EndLocation = traceHitResult.Location - traceHitResult.GetComponent()->GetComponentLocation();
+			CableComp->EndLocation = traceHitResult.GetComponent()->GetComponentLocation() - traceHitResult.Location;
 			CableComp->EndLocation.X = traceHitResult.GetComponent()->GetComponentLocation().X;
+			//DrawDebugLine(GetWorld(), playerLoc, CableComp->GetAttachedComponent()->GetComponentLocation() - CableComp->EndLocation, FColor::Green, true);
 
 			//set grapple location (for GrappleMovement function to handle)
-			grappleToLoc = traceHitResult.Actor->GetActorLocation();
+			grappleToLoc = traceHitResult.Location;
 			
 			shouldGrapple = true;
 		}
@@ -132,7 +134,7 @@ void ALOL_Character::GrappleMovement()
 	if (grappleStop == false)
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("grappling to point"));
-		LaunchCharacter((grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.1, false, false);
+		LaunchCharacter((grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.05, false, false);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleToLoc.ToString());
 	}
 	else
@@ -169,6 +171,10 @@ void ALOL_Character::Tick(float DeltaTime)
 	{
 		canBlast = true;
 	}
+	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+	FVector playerLoc = GetPlayerLoc(playerController);
+	if (playerLoc.X != 0)
+		playerController->GetPawn()->SetActorLocation(FVector(0, playerLoc.Y, playerLoc.Z));
 	
 }
 

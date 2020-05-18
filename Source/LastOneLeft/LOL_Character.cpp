@@ -65,7 +65,7 @@ FVector ALOL_Character::GetMouseLoc(APlayerController* playerController)
 
 void ALOL_Character::StopGrapple()
 {
-	/*
+	
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("released mouse button"));
 	grappleStop = true;
 	if (shouldGrapple)
@@ -75,7 +75,7 @@ void ALOL_Character::StopGrapple()
 
 		LaunchCharacter(FVector(0, 0, intensity), false, false);
 	}
-	*/
+	
 }
 
 void ALOL_Character::Grapple()
@@ -149,7 +149,7 @@ void ALOL_Character::GrappleMovement()
 		FVector playerLoc = GetPlayerLoc(playerController);
 		CableComp->EndLocation = grappleEndLoc - playerLoc;;
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("grappling to point"));
-		//LaunchCharacter((grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.05, false, false);
+		LaunchCharacter((grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.05, false, false);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleToLoc.ToString());
 	}
 	else

@@ -36,7 +36,17 @@ void ALOL_Character::MoveRight(float v)
 }
 void ALOL_Character::Blast()
 {
+	if (canBlast)
+	{
+		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+		FVector playerLoc = GetPlayerLoc(playerController);
+		FVector mouseLoc = GetMouseLoc(playerController);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("blasting"));
+		mouseLoc.X = 0;
 
+		LaunchCharacter((mouseLoc - playerLoc) * 5, false, false);
+		canBlast = false;
+	}
 }
 
 FVector ALOL_Character::GetPlayerLoc(APlayerController* playerController)
@@ -150,10 +160,14 @@ void ALOL_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ALOL_Character::Tick(float DeltaTime)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString(grappleStop ? TEXT("true") : TEXT("false")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString(canBlast ? TEXT("true") : TEXT("false")));
 	if (shouldGrapple)
 	{
 		GrappleMovement();
+	}
+	if (CanJump() && !canBlast)
+	{
+		canBlast = true;
 	}
 	
 }

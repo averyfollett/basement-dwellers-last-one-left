@@ -44,6 +44,7 @@ protected:
 	FVector grappleToLoc;
 	bool shouldGrapple = false;
 	bool grappleStop = false;
+	bool canBlast = true;
 
 public:	
 	// Called to bind functionality to input

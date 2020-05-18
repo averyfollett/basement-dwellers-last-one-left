@@ -42,9 +42,10 @@ void ALOL_Character::Blast()
 		FVector playerLoc = GetPlayerLoc(playerController);
 		FVector mouseLoc = GetMouseLoc(playerController);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("blasting"));
-		mouseLoc.X = 0;
+		mouseLoc.X = playerLoc.X;
+		MeshComp->SetRelativeRotation(UKismetMathLibrary::FindLookAtRotation(playerLoc, mouseLoc));
 
-		LaunchCharacter((mouseLoc - playerLoc) * 4, false, false);
+		LaunchCharacter(MeshComp->GetForwardVector() * 1000, false, false);
 		canBlast = false;
 	}
 }
@@ -103,14 +104,14 @@ void ALOL_Character::Grapple()
 		if (traceHitResult.Component->ComponentHasTag(FName("Platform")))
 		{
 			//debug grapple location
-			DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Actor->GetActorLocation(), FColor::Red, true);
+			//DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Actor->GetActorLocation(), FColor::Red, true);
 			//DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Location, FColor::Green, true);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("actor is platform"));
 			
 			//attach cable to hit result location
 			CableComp->SetVisibility(true, true);
 			CableComp->SetAttachEndToComponent(traceHitResult.GetComponent());
-			CableComp->EndLocation = traceHitResult.GetComponent()->GetComponentLocation() - traceHitResult.Location;
+			CableComp->EndLocation = traceHitResult.Location - traceHitResult.GetComponent()->GetComponentLocation();
 			CableComp->EndLocation.X = traceHitResult.GetComponent()->GetComponentLocation().X;
 			//DrawDebugLine(GetWorld(), playerLoc, CableComp->GetAttachedComponent()->GetComponentLocation() - CableComp->EndLocation, FColor::Green, true);
 

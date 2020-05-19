@@ -54,6 +54,8 @@ protected:
 		bool canBlast = true;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Walk")
 		FVector playerVelocity;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Jump")
+		bool isJump = true;
 
 public:	
 	// Called to bind functionality to input

@@ -48,6 +48,7 @@ void ALOL_Character::Blast()
 		
 		LaunchCharacter(MeshComp->GetForwardVector() * 1000, false, false);
 		canBlast = false;
+		isJump = true;
 	}
 }
 
@@ -181,6 +182,7 @@ void ALOL_Character::Tick(float DeltaTime)
 	if (CanJump() && !canBlast)
 	{
 		canBlast = true;
+		isJump = false;
 	}
 	playerVelocity = GetVelocity();
 

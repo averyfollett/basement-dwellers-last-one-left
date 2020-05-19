@@ -51,6 +51,8 @@ protected:
 		bool grappleStop = false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blast")
 		bool canBlast = true;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Walk")
+		FVector playerVelocity;
 
 public:	
 	// Called to bind functionality to input

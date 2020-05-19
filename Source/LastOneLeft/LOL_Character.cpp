@@ -177,6 +177,7 @@ void ALOL_Character::Tick(float DeltaTime)
 	{
 		canBlast = true;
 	}
+	playerVelocity = GetVelocity();
 
 	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 	FVector playerLoc = GetPlayerLoc(playerController);

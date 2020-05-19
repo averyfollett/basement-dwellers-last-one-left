@@ -39,10 +39,11 @@ protected:
 	void Blast();
 	FVector GetPlayerLoc(APlayerController* playerController);
 	FVector GetMouseLoc(APlayerController* playerController);
+	AActor* platform;
 
 	// Variables:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
-		FVector grappleToLoc;
+		FVector grappleOffset;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
 		FVector grappleEndLoc;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")

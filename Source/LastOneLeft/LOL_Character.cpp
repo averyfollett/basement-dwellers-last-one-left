@@ -74,9 +74,12 @@ void ALOL_Character::StopGrapple()
 		float intensity = 400.0f;
 		float dist = (grappleEndLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()).Size();
 
-		LaunchCharacter(FVector(0, 0, intensity), false, false);
+		if (cableAnimFinished)
+		{
+			LaunchCharacter(FVector(0, 0, intensity), false, false);
+		}
 	}
-	
+
 }
 
 void ALOL_Character::Grapple()
@@ -106,26 +109,31 @@ void ALOL_Character::Grapple()
 		//if hit actor is a platform
 		if (traceHitResult.Component->ComponentHasTag(FName("Platform")))
 		{
+
 			//debug grapple location
 			//DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Actor->GetActorLocation(), FColor::Red, true);
 			//DrawDebugLine(GetWorld(), playerLoc, traceHitResult.Location, FColor::Green, true);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("actor is platform"));
 			
 			//attach cable to hit result location
-			CableComp->SetVisibility(true, true);
+			
 			/*
 			CableComp->SetAttachEndToComponent(traceHitResult.GetComponent());
 			CableComp->EndLocation = traceHitResult.Location - traceHitResult.GetComponent()->GetComponentLocation();
 			CableComp->EndLocation.X = traceHitResult.GetComponent()->GetComponentLocation().X;
 			*/
-			grappleEndLoc = traceHitResult.Location;
-			CableComp->EndLocation = grappleEndLoc - playerLoc;
-			platform = traceHitResult.GetActor();
+			
 
 			//DrawDebugLine(GetWorld(), playerLoc, CableComp->EndLocation - CableComp->GetAttachedComponent()->GetComponentLocation(), FColor::Green, true);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, traceHitResult.Location.ToString());
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, CableComp->GetAttachedComponent()->GetComponentLocation().ToString());
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, CableComp->EndLocation.ToString());
+
+			CableComp->SetVisibility(true, true);
+			grappleEndLoc = traceHitResult.Location;
+			//CableComp->EndLocation = grappleEndLoc - playerLoc;
+			cableAnimFinished = false;
+			platform = traceHitResult.GetActor();
 
 			//set grapple location (for GrappleMovement function to handle)
 			grappleOffset = traceHitResult.Location - traceHitResult.GetActor()->GetActorLocation();
@@ -141,7 +149,7 @@ void ALOL_Character::Grapple()
 
 void ALOL_Character::GrappleMovement()
 {
-	if (grappleStop == false)
+	if (!grappleStop && cableAnimFinished)
 	{
 		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 		FVector playerLoc = GetPlayerLoc(playerController);
@@ -152,7 +160,7 @@ void ALOL_Character::GrappleMovement()
 		LaunchCharacter((platform->GetActorLocation() + grappleOffset - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.05, false, false);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleToLoc.ToString());
 	}
-	else
+	else if(grappleStop)
 	{
 		shouldGrapple = false;
 		CableComp->SetVisibility(false, true);

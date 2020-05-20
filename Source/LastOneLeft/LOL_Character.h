@@ -39,7 +39,6 @@ protected:
 	void Blast();
 	FVector GetPlayerLoc(APlayerController* playerController);
 	FVector GetMouseLoc(APlayerController* playerController);
-	AActor* platform;
 
 	// Variables:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
@@ -56,6 +55,10 @@ protected:
 		FVector playerVelocity;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Jump")
 		bool isJump = true;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Cable")
+		bool cableAnimFinished = true;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Platform")
+		AActor* platform;
 
 public:	
 	// Called to bind functionality to input
@@ -63,4 +66,7 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Test")
+		void animateCable();
 };

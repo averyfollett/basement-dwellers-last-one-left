@@ -46,7 +46,7 @@ void ALOL_Character::Blast()
 		MeshComp->SetRelativeRotation(UKismetMathLibrary::FindLookAtRotation(playerLoc, mouseLoc));
 		//GetRootComponent()->ComponentVelocity = FVector(0.0f, 0.0f, 0.0f);
 		
-		LaunchCharacter(MeshComp->GetForwardVector() * 1000, false, false);
+		LaunchCharacter(MeshComp->GetForwardVector() * blastIntensity, false, false);
 		canBlast = false;
 		isJump = true;
 	}
@@ -71,10 +71,9 @@ void ALOL_Character::StopGrapple()
 	grappleStop = true;
 	if (shouldGrapple)
 	{
-		float intensity = 400.0f;
 		float dist = (grappleEndLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()).Size();
 
-		LaunchCharacter(FVector(0, 0, intensity), false, false);
+		LaunchCharacter(FVector(0, 0, grappleJumpIntensity), false, false);
 	}
 	
 }
@@ -93,7 +92,7 @@ void ALOL_Character::Grapple()
 	MeshComp->SetRelativeRotation(UKismetMathLibrary::FindLookAtRotation(playerLoc, mouseLoc));
 
 	//calculate the end location of the line trace based on a set length
-	FVector endLoc = (MeshComp->GetForwardVector() * 1000) + playerLoc;
+	FVector endLoc = (MeshComp->GetForwardVector() * grappleDist) + playerLoc;
 
 	//do the line trace for anything blocking visibility
 	FHitResult traceHitResult;
@@ -103,6 +102,7 @@ void ALOL_Character::Grapple()
 	//if we hit an actor
 	if (traceHitResult.GetActor() != nullptr)
 	{
+		
 		//if hit actor is a platform
 		if (traceHitResult.Component->ComponentHasTag(FName("Platform")))
 		{
@@ -149,7 +149,7 @@ void ALOL_Character::GrappleMovement()
 
 		CableComp->EndLocation = platform->GetActorLocation() + grappleOffset - playerLoc;
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("grappling to point"));
-		LaunchCharacter((platform->GetActorLocation() + grappleOffset - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.05, false, false);
+		LaunchCharacter((platform->GetActorLocation() + grappleOffset - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * grappleSpeed, false, false);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleToLoc.ToString());
 	}
 	else
@@ -164,8 +164,8 @@ void ALOL_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	//PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	//PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Grapple", IE_Pressed, this, &ALOL_Character::Grapple);
 	PlayerInputComponent->BindAction("Grapple", IE_Released, this, &ALOL_Character::StopGrapple);
 	PlayerInputComponent->BindAction("Blast", IE_Pressed, this, &ALOL_Character::Blast);

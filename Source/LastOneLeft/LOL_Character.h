@@ -72,6 +72,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Test")
+		void animateBlast();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 };

@@ -38,6 +38,7 @@ void ALOL_Character::Blast()
 {
 	if (canBlast)
 	{
+		animateBlast();
 		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 		FVector playerLoc = GetPlayerLoc(playerController);
 		FVector mouseLoc = GetMouseLoc(playerController);

@@ -55,12 +55,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Grapple")
 		float grappleSpeed = 0.05;
 	UPROPERTY(EditAnywhere, Category = "Grapple")
-		float grappleJumpIntensity = 1000;
+		float grappleJumpIntensity = 400.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blast")
 		bool canBlast = true;
 	UPROPERTY(EditAnywhere, Category = "Blast")
-		float blastIntensity = 400;
+		float blastIntensity = 1000.0f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Walk")
 		FVector playerVelocity;

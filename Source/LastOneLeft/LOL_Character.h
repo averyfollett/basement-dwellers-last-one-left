@@ -39,20 +39,34 @@ protected:
 	void Blast();
 	FVector GetPlayerLoc(APlayerController* playerController);
 	FVector GetMouseLoc(APlayerController* playerController);
+	AActor* platform;
 
 	// Variables:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
-		FVector grappleToLoc;
+		FVector grappleOffset;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
 		FVector grappleEndLoc;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
 		bool shouldGrapple = false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
 		bool grappleStop = false;
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+		float grappleDist = 1000;
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+		float grappleSpeed = 0.05;
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+		float grappleJumpIntensity = 400.0f;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blast")
 		bool canBlast = true;
+	UPROPERTY(EditAnywhere, Category = "Blast")
+		float blastIntensity = 1000.0f;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Walk")
 		FVector playerVelocity;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Jump")
+		bool isJump = true;
 
 public:	
 	// Called to bind functionality to input

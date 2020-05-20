@@ -36,7 +36,6 @@ void ALOL_Character::MoveRight(float v)
 }
 void ALOL_Character::Blast()
 {
-
 	if (canBlast)
 	{
 		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
@@ -45,9 +44,11 @@ void ALOL_Character::Blast()
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("blasting"));
 		mouseLoc.X = playerLoc.X;
 		MeshComp->SetRelativeRotation(UKismetMathLibrary::FindLookAtRotation(playerLoc, mouseLoc));
-
+		//GetRootComponent()->ComponentVelocity = FVector(0.0f, 0.0f, 0.0f);
+		
 		LaunchCharacter(MeshComp->GetForwardVector() * 1000, false, false);
 		canBlast = false;
+		isJump = true;
 	}
 }
 
@@ -71,7 +72,7 @@ void ALOL_Character::StopGrapple()
 	if (shouldGrapple)
 	{
 		float intensity = 400.0f;
-		float dist = (grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()).Size();
+		float dist = (grappleEndLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()).Size();
 
 		LaunchCharacter(FVector(0, 0, intensity), false, false);
 	}
@@ -87,7 +88,6 @@ void ALOL_Character::Grapple()
 
 	//find where the player clicks
 	FVector mouseLoc = GetMouseLoc(playerController);
-	
 
 	//rotate our temp object toward clicked location
 	MeshComp->SetRelativeRotation(UKismetMathLibrary::FindLookAtRotation(playerLoc, mouseLoc));
@@ -120,6 +120,7 @@ void ALOL_Character::Grapple()
 			*/
 			grappleEndLoc = traceHitResult.Location;
 			CableComp->EndLocation = grappleEndLoc - playerLoc;
+			platform = traceHitResult.GetActor();
 
 			//DrawDebugLine(GetWorld(), playerLoc, CableComp->EndLocation - CableComp->GetAttachedComponent()->GetComponentLocation(), FColor::Green, true);
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, traceHitResult.Location.ToString());
@@ -127,7 +128,7 @@ void ALOL_Character::Grapple()
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, CableComp->EndLocation.ToString());
 
 			//set grapple location (for GrappleMovement function to handle)
-			grappleToLoc = traceHitResult.Location;
+			grappleOffset = traceHitResult.Location - traceHitResult.GetActor()->GetActorLocation();
 			
 			shouldGrapple = true;
 		}
@@ -135,26 +136,24 @@ void ALOL_Character::Grapple()
 		{
 			shouldGrapple = false;
 		}
-
 	}
-	
 }
 
 void ALOL_Character::GrappleMovement()
 {
-	//if ((GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - grappleToLoc).Size() > 180 && grappleStop == false)
 	if (grappleStop == false)
 	{
 		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 		FVector playerLoc = GetPlayerLoc(playerController);
-		CableComp->EndLocation = grappleEndLoc - playerLoc;;
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleEndLoc.ToString());
+
+		CableComp->EndLocation = platform->GetActorLocation() + grappleOffset - playerLoc;
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString("grappling to point"));
-		LaunchCharacter((grappleToLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.05, false, false);
+		LaunchCharacter((platform->GetActorLocation() + grappleOffset - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()) * 0.05, false, false);
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, grappleToLoc.ToString());
 	}
 	else
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("DONE grapple"));
 		shouldGrapple = false;
 		CableComp->SetVisibility(false, true);
 		grappleStop = false;
@@ -170,14 +169,12 @@ void ALOL_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Grapple", IE_Pressed, this, &ALOL_Character::Grapple);
 	PlayerInputComponent->BindAction("Grapple", IE_Released, this, &ALOL_Character::StopGrapple);
 	PlayerInputComponent->BindAction("Blast", IE_Pressed, this, &ALOL_Character::Blast);
-	
 
 	PlayerInputComponent->BindAxis("MoveRight", this, &ALOL_Character::MoveRight);
 }
 
 void ALOL_Character::Tick(float DeltaTime)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, FString(canBlast ? TEXT("true") : TEXT("false")));
 	if (shouldGrapple)
 	{
 		GrappleMovement();
@@ -185,11 +182,13 @@ void ALOL_Character::Tick(float DeltaTime)
 	if (CanJump() && !canBlast)
 	{
 		canBlast = true;
+		isJump = false;
 	}
+	playerVelocity = GetVelocity();
+
 	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 	FVector playerLoc = GetPlayerLoc(playerController);
 	if (playerLoc.X != 0)
 		playerController->GetPawn()->SetActorLocation(FVector(0, playerLoc.Y, playerLoc.Z));
 	
 }
-

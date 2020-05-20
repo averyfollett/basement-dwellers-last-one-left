@@ -100,9 +100,9 @@ void ALOL_Character::Grapple()
 	//DrawDebugLine(GetWorld(), playerLoc, endLoc, FColor::Green, true);
 
 	//if we hit an actor
-	if (traceHitResult.GetActor() != nullptr)
+	if (traceHitResult.GetActor() != nullptr && traceHitResult.Location.Z >= playerLoc.Z)
 	{
-		
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, traceHitResult.GetActor()->GetName());
 		//if hit actor is a platform
 		if (traceHitResult.Component->ComponentHasTag(FName("Platform")))
 		{

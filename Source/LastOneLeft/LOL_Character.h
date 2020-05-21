@@ -50,16 +50,30 @@ protected:
 		bool shouldGrapple = false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Grapple")
 		bool grappleStop = false;
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+		float grappleDist = 1000;
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+		float grappleSpeed = 0.05;
+	UPROPERTY(EditAnywhere, Category = "Grapple")
+		float grappleJumpIntensity = 400.0f;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blast")
 		bool canBlast = true;
+	UPROPERTY(EditAnywhere, Category = "Blast")
+		float blastIntensity = 1000.0f;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Walk")
 		FVector playerVelocity;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Jump")
 		bool isJump = true;
 
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Test")
+		void animateBlast();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -91,16 +91,13 @@ FVector ALOL_Character::GetMouseLoc(APlayerController* playerController)
 
 void ALOL_Character::StopGrapple()
 {
-	
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString("released mouse button"));
 	grappleStop = true;
 	if (shouldGrapple)
 	{
 		float dist = (grappleEndLoc - GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation()).Size();
-
 		LaunchCharacter(FVector(0, 0, grappleJumpIntensity), false, false);
 	}
-	
 }
 
 void ALOL_Character::Grapple()
@@ -127,7 +124,7 @@ void ALOL_Character::Grapple()
 	//if we hit an actor
 	if (traceHitResult.GetActor() != nullptr && traceHitResult.Location.Z >= playerLoc.Z)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, traceHitResult.GetActor()->GetName());
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, traceHitResult.GetActor()->GetName());
 		//if hit actor is a platform
 		if (traceHitResult.Component->ComponentHasTag(FName("Platform")))
 		{
@@ -223,6 +220,7 @@ void ALOL_Character::Tick(float DeltaTime)
 	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 	FVector playerLoc = GetPlayerLoc(playerController);
 	if (playerLoc.X != 0)
+	{
 		playerController->GetPawn()->SetActorLocation(FVector(0, playerLoc.Y, playerLoc.Z));
-	
+	}
 }

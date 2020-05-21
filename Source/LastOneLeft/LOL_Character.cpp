@@ -7,6 +7,8 @@
 #include "GameFramework/Controller.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 ALOL_Character::ALOL_Character()
@@ -25,6 +27,24 @@ ALOL_Character::ALOL_Character()
 	CableComp = CreateDefaultSubobject<UCableComponent>(TEXT("CableComp"));
 	CableComp->SetupAttachment(MeshComp);
 	CableComp->SetVisibility(false, true);
+
+	//Load sound cues
+	static ConstructorHelpers::FObjectFinder<USoundCue> grappleImpactCue(TEXT("/Game/Sounds/Effects/Grapple_Impact_Cue.Grapple_Impact_Cue"));
+	grappleImpactAudioCue = grappleImpactCue.Object;
+	static ConstructorHelpers::FObjectFinder<USoundCue> grappleReleaseCue(TEXT("/Game/Sounds/Effects/Grapple_Release_Cue.Grapple_Release_Cue"));
+	grappleReleaseAudioCue = grappleReleaseCue.Object;
+	static ConstructorHelpers::FObjectFinder<USoundCue> grappleThrowCue(TEXT("/Game/Sounds/Effects/Grapple_Throw_Cue.Grapple_Throw_Cue"));
+	grappleThrowAudioCue = grappleThrowCue.Object;
+	static ConstructorHelpers::FObjectFinder<USoundCue> jumpSpellCue(TEXT("/Game/Sounds/Effects/Jump_Spell_Cue.Jump_Spell_Cue"));
+	jumpSpellAudioCue = jumpSpellCue.Object;
+
+	//Create audio components
+	grappleAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("GrappleAudioComp"));
+	grappleAudioComponent->SetAutoActivate(false);
+	grappleAudioComponent->SetupAttachment(RootComponent);
+	jumpAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("JumpAudioComp"));
+	jumpAudioComponent->SetAutoActivate(false);
+	jumpAudioComponent->SetupAttachment(RootComponent);
 }
 
 void ALOL_Character::MoveRight(float v)
@@ -39,6 +59,10 @@ void ALOL_Character::Blast()
 	if (canBlast)
 	{
 		animateBlast();
+		if (grappleImpactAudioCue->IsValidLowLevelFast()) {
+			jumpAudioComponent->SetSound(jumpSpellAudioCue);
+			jumpAudioComponent->Play();
+		}
 		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 		FVector playerLoc = GetPlayerLoc(playerController);
 		FVector mouseLoc = GetMouseLoc(playerController);
@@ -132,6 +156,11 @@ void ALOL_Character::Grapple()
 			grappleOffset = traceHitResult.Location - traceHitResult.GetActor()->GetActorLocation();
 			
 			shouldGrapple = true;
+
+			if (grappleImpactAudioCue->IsValidLowLevelFast()) {
+				grappleAudioComponent->SetSound(grappleImpactAudioCue);
+				grappleAudioComponent->Play();
+			}
 		}
 		else
 		{
@@ -158,6 +187,10 @@ void ALOL_Character::GrappleMovement()
 		shouldGrapple = false;
 		CableComp->SetVisibility(false, true);
 		grappleStop = false;
+		if (grappleImpactAudioCue->IsValidLowLevelFast()) {
+			grappleAudioComponent->SetSound(grappleReleaseAudioCue);
+			grappleAudioComponent->Play();
+		}
 	}
 }
 

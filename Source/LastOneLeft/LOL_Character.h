@@ -8,6 +8,8 @@ class UCameraComponent;
 class UStaticMeshComponent;
 class UBoxComponent;
 class UCableComponent;
+class USoundCue;
+class UAudioComponent;
 
 UCLASS()
 class LASTONELEFT_API ALOL_Character : public ACharacter
@@ -67,6 +69,24 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Jump")
 		bool isJump = true;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+		USoundCue* grappleImpactAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+		USoundCue* grappleReleaseAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+		USoundCue* grappleThrowAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+		USoundCue* jumpSpellAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+		UAudioComponent* grappleAudioComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+		UAudioComponent* jumpAudioComponent;
 
 public:	
 	// Called to bind functionality to input

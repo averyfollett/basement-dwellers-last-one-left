@@ -6,7 +6,7 @@ Theme: Last One Left
 Engine: Unreal Engine 4.25
 
 **Team Members:**
-* Avery - Programmer
+* [Avery](https://www.averyfollett.com/) - Programmer
 * Cameron - Artist
 * Griffin - Designer
 * Katrina - Artist

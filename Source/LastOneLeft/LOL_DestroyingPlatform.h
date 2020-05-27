@@ -17,7 +17,7 @@ public:
 	// Sets default values for this actor's properties
 	ALOL_DestroyingPlatform();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Platform")
 		UStaticMeshComponent* MeshComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Trigger")
@@ -41,10 +41,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Timer")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timer")
 		bool timerRunning;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Timer")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timer")
 		float maxTimeUntilDestroy;
 
 private:

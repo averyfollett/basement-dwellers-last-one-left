@@ -11,6 +11,7 @@ ALOL_DestroyingPlatform::ALOL_DestroyingPlatform()
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	MeshComp->SetupAttachment(RootComponent);
 	MeshComp->SetCollisionResponseToAllChannels(ECR_Block);
+	RootComponent = MeshComp;
 
 	BoxTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxTrigger"));
 	BoxTrigger->SetupAttachment(MeshComp);
